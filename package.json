@@ -1,14 +1,27 @@
 {
-    "name": "movies-database",
-    "version": "1.0.0",
-    "description": "",
-    "main": "app.js",
-    "author": "",
-    "license": "ISC",
-    "dependencies": {
-        "express": "4.17.1",
-        "nodemon": "2.0.7",
-        "sqlite": "4.0.19",
-        "sqlite3": "5.0.2"
-    }
+  "name": "movies-database",
+  "version": "1.0.0",
+  "description": "Given two files `app.js` and a database file `moviesData.db` consisting of two tables `movie` and `director`.",
+  "main": "app.js",
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "date-fns": "^2.30.0",
+    "express": "4.17.1",
+    "nodemon": "2.0.7",
+    "sqlite": "4.0.19",
+    "sqlite3": "5.0.2"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Saiprakash29101998/CodingPractice5Movies.git"
+  },
+  "keywords": [],
+  "bugs": {
+    "url": "https://github.com/Saiprakash29101998/CodingPractice5Movies/issues"
+  },
+  "homepage": "https://github.com/Saiprakash29101998/CodingPractice5Movies#readme"
 }

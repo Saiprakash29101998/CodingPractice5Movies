@@ -1,0 +1,69 @@
+###
+###1
+###
+GET /movies/ HTTP/1.1
+Host: localhost:3021
+
+
+###
+###2
+###
+POST /movies/ HTTP/1.1
+Host: localhost:3021
+Content-Type: application/json
+
+{
+  "directorId": 1,
+  "movieName": "Example Movie",
+  "leadActor": "John Doe"
+}
+
+###
+###3
+###
+GET /movies/4/ HTTP/1.1
+Host: localhost:3021
+
+
+###
+###4
+###
+PUT /movies/1/ HTTP/1.1
+Host: localhost:3021
+Content-Type: application/json
+
+{
+  "directorId": 2,
+  "movieName": "Updated Movie",
+  "leadActor": "Jane Doe"
+}
+
+###
+###5
+###
+DELETE /movies/1/ HTTP/1.1
+Host: localhost:3021
+
+###
+###6
+###
+GET /directors/ HTTP/1.1
+Host: localhost:3021
+
+###
+###7
+###
+GET /directors/1/movies/ HTTP/1.1
+Host: localhost:3021
+
+app.get("/movies/:movieId/", async (request, response) => {
+  const { movieId } = request.params;
+  const getMovieQuery = `
+    SELECT *
+    FROM movie
+    WHERE movie_id = ${movieId}
+    `;
+
+  let movie = await db.get(getMovieQuery);
+  response.send(movie);
+});

@@ -3,11 +3,18 @@ const app = express();
 const { open } = require("sqlite");
 const sqlite3 = require("sqlite3");
 const path = require("path");
-app.use(express.json());
 module.exports = app;
 
 const dbPath = path.join(__dirname, "moviesData.db");
-
+const convertDBObjToResponseObj = (dbObj) => {
+  return {
+    movieId: dbObj.movie_id,
+    directorId: dbObj.director_id,
+    movieName: dbObj.movie_name,
+    leadActor: dbObj.lead_actor,
+  };
+};
+app.use(express.json());
 let db = null;
 
 const initializeDBAndServer = async () => {
@@ -20,7 +27,7 @@ const initializeDBAndServer = async () => {
       console.log("Server Started at http://localhost:3021");
     });
   } catch (error) {
-    console.log(`DB Error: ${error.message}`);
+    console.log(`DB Error: ${error.message} `);
     process.exit(1);
   }
 };
@@ -31,10 +38,11 @@ initializeDBAndServer();
 
 app.get("/movies/", async (request, response) => {
   const getMoviesQuery = `
-    SELECT *
+    SELECT movie_name
     FROM movie
     `;
-  const moviesArray = await db.all(getMoviesQuery);
+  let moviesArray = await db.all(getMoviesQuery);
+  moviesArray = moviesArray.map(movieSnakeToCamel);
   response.send(moviesArray);
 });
 
@@ -61,7 +69,8 @@ app.get("/movies/:movieId/", async (request, response) => {
     FROM movie
     WHERE movie_id = ${movieId}
     `;
-  const movie = await db.get(getMovieQuery);
+  let movie = await db.get(getMovieQuery);
+  movie = movie.map(movieSnakeToCamel);
   response.send(movie);
 });
 
@@ -97,19 +106,29 @@ app.delete("/movies/:movieId/", async (request, response) => {
 });
 
 //API 6
-
+const directorSnakeToCamel = (dirObj) => {
+  return {
+    directorId: dirObj.director_id,
+    directorName: dirObj.director_name,
+  };
+};
 app.get("/directors/", async (request, response) => {
   const getDirectorsQuery = `
     SELECT * 
     FROM 
     director
     `;
-  const directorsArray = await db.all(getDirectorsQuery);
+  let directorsArray = await db.all(getDirectorsQuery);
+  directorsArray = directorsArray.map(directorSnakeToCamel);
   response.send(directorsArray);
 });
 
 //API 7
-
+const movieSnakeToCamel = (dirObj) => {
+  return {
+    movieName: dirObj.movie_name,
+  };
+};
 app.get("/directors/:directorId/movies/", async (request, response) => {
   const { directorId } = request.params;
   const getMoviesOfDirectorsQuery = `
@@ -117,8 +136,9 @@ app.get("/directors/:directorId/movies/", async (request, response) => {
     FROM movie
     INNER JOIN director
     ON movie.director_id = director.director_id
-    WHERE director_id = ${directorId}
+    WHERE movie.director_id = ${directorId}
     `;
-  const moviesOfDirectorsArray = await db.all(getMoviesOfDirectorsQuery);
+  let moviesOfDirectorsArray = await db.all(getMoviesOfDirectorsQuery);
+  moviesOfDirectorsArray = moviesOfDirectorsArray.map(movieSnakeToCamel);
   response.send(moviesOfDirectorsArray);
 });
